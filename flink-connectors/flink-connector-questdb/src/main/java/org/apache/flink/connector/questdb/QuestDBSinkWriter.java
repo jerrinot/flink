@@ -1,31 +1,32 @@
 package org.apache.flink.connector.questdb;
 
-import io.questdb.client.Sender;
-
 import org.apache.flink.api.connector.sink2.SinkWriter;
 import org.apache.flink.table.data.RowData;
 
-import java.io.IOException;
+import io.questdb.client.Sender;
 
 public class QuestDBSinkWriter implements SinkWriter<RowData> {
     private final Sender sender;
+    private final QuestDBSink.WriterAdapter adapter;
 
-    public QuestDBSinkWriter(Sender sender) {
+    public QuestDBSinkWriter(QuestDBSink.WriterAdapter adapter, Sender sender) {
+        this.adapter = adapter;
         this.sender = sender;
     }
 
     @Override
-    public void write(RowData element, Context context) throws IOException, InterruptedException {
-        System.out.println("writing " + element);
+    public void write(RowData element, Context context) {
+        Long timestamp = context.timestamp();
+        adapter.write(element, timestamp);
     }
 
     @Override
-    public void flush(boolean endOfInput) throws IOException, InterruptedException {
-        System.out.println("flushing, end-of-input: " + endOfInput);
+    public void flush(boolean endOfInput) {
+        sender.flush();
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         sender.close();
     }
 }
