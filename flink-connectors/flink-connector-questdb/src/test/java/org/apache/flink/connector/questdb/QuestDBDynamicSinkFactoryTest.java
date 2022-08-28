@@ -34,7 +34,8 @@ public class QuestDBDynamicSinkFactoryTest {
                         + ")\n"
                         + "WITH (\n"
                         + String.format("'%s'='%s',\n", "connector", "questdb")
-                        + String.format("'%s'='%s',\n", "table", "flink_table")
+                        + String.format("'%s'='%s',\n", "host", "localhost")
+                        + String.format("'%s'='%s'\n", "table", "flink_table")
                         + ")");
 
         tableEnvironment
